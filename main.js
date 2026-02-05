@@ -2,11 +2,33 @@ const form = document.querySelector('#forms');
 const button = document.getElementById('submit')
 const popup = document.getElementById("popup");
 
+// Clear input errors on typing
+document.querySelectorAll('input[required]').forEach(input => {
+  input.addEventListener('input', () => {
+    const errorEl = input.parentElement.querySelector('.error');
+    if (input.value.trim() !== '') {
+      errorEl.innerHTML = '';
+    }
+  });
+});
+
+// Clear select errors on change or keyup (keyboard interaction)
+document.querySelectorAll('select[required]').forEach(select => {
+  const errorEl = select.parentElement.querySelector('.error');
+  select.addEventListener('change', () => {
+    if (select.value !== 'Please select') errorEl.innerHTML = '';
+  });
+  select.addEventListener('keyup', () => {
+    if (select.value !== 'Please select') errorEl.innerHTML = '';
+  });
+});
+
 button.addEventListener('click', (e) => {
   e.preventDefault();
   let required = document.querySelectorAll('input[required]');
   let selects = document.querySelectorAll('select[required]');
   let isValid = true;
+  
   // for input required field
   required.forEach(input => {
     let errorEl = input.parentElement.querySelector('.error');
@@ -25,6 +47,7 @@ button.addEventListener('click', (e) => {
       errorEl.innerHTML = 'Enter all required fields';
       isValid = false;
     } else {
+
       errorEl.innerHTML = '';
     }
   });
@@ -72,26 +95,26 @@ button.addEventListener('click', (e) => {
   }
 
 
-  if (isValid) {
+  if (isValid==true) {
     popup.style.display = "block";
-  //   const formData = new FormData(form);
+    const formData = new FormData(form);
 
-  //   fetch('/', {
-  //     method: 'post',
-  //     body: formData,
-  //     headers:{
-  //       "Content-type":'application/json'
-  //     }
-  //   })
-  //     .then(response => response.json()) // Assuming your server responds with JSON
-  //     .then(data => {
-  //       console.log('Success:', data);
-  //       // Handle successful submission
-  //     })
-  //     .catch(error => {
-  //       console.error('Error:', error);
-  //       // Handle errors
-  //     });
+    fetch('/', {
+      method: 'post',
+      body: formData,
+      headers:{
+        "Content-type":'application/json'
+      }
+    })
+      .then(response => response.json()) // Assuming your server responds with JSON
+      .then(data => {
+        console.log('Success:', data);
+        // Handle successful submission
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Handle errors
+      });
   }
 
 });
